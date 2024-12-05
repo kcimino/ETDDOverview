@@ -1,0 +1,88 @@
+---
+title: "Variable Tables"
+format: html
+editor: source
+---
+
+```{r}
+
+if (exists("startrun")) {
+  print(fortunes::fortune())
+} else {
+  source(here::here("scripts", "startHere.R"))
+}
+acsdf <- read_csv(here::here('data','processed','etddAreaAcsVars.csv'))
+
+totaldf <- acsdf # do rbind or left join later
+
+varsdf <- read_csv(here::here('data','processed','varsdf.csv'))
+```
+
+
+# By Grant
+
+:::{.panel-tabset}
+
+## EPA
+
+```{r}
+
+#names()
+# rename()
+```
+
+
+## ARC
+
+::::
+
+# By Geography
+
+:::{.panel-tabset}
+## State
+
+## County
+
+## Place
+
+::::
+
+# By Category
+
+:::{.panel-tabset}
+
+## demographics
+
+```{r}
+
+# varsdf %>% 
+#   filter(category=='demographics') %>% 
+#   select(varName) %>% 
+#   left_join(totaldf)# %>% 
+
+#names()
+#rename()
+
+
+```
+
+
+## labor
+
+## economics
+
+## housing
+
+## misc
+
+::::
+
+# All
+
+# Variable Guide
+
+```{r}
+varsdf %>% select(-varName)
+```
+
+
