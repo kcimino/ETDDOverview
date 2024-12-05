@@ -26,13 +26,59 @@ varsdf <- read_csv(here::here('data','processed','varsdf.csv'))
 ## EPA
 
 ```{r}
-
+epaVars <- varsdf %>% 
+  filter(str_detect(grant,'EPA')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+pctVars <- varsdf %>% 
+  filter(str_detect(grant,'EPA'), str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  select(NAME,any_of(epaVars),geography) %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars
+  )
 #names()
 # rename()
 ```
 
 
 ## ARC
+
+```{r}
+arcVars <- varsdf %>% 
+  filter(str_detect(grant,'ARC')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+pctVars <- varsdf %>% 
+  filter(str_detect(grant,'ARC'), str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  select(NAME,any_of(arcVars),geography) %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars,
+    digits=1
+  )
+```
+
 
 ::::
 
@@ -41,48 +87,108 @@ varsdf <- read_csv(here::here('data','processed','varsdf.csv'))
 :::{.panel-tabset}
 ## State
 
-## County
-
-## Place
-
-::::
-
-# By Category
-
-:::{.panel-tabset}
-
-## demographics
-
 ```{r}
 
-# varsdf %>% 
-#   filter(category=='demographics') %>% 
-#   select(varName) %>% 
-#   left_join(totaldf)# %>% 
-
-#names()
-#rename()
-
-
+pctVars <- varsdf %>% 
+  filter(str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  filter(geography=='state') %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars,
+    digits=1
+  )
 ```
 
 
-## labor
+## County
 
-## economics
+```{r}
+pctVars <- varsdf %>% 
+  filter(str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  filter(geography=='county') %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars,
+    digits=1
+  )
+```
 
-## housing
 
-## misc
+## Place
+
+```{r}
+pctVars <- varsdf %>% 
+  filter(str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  filter(geography=='place') %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars,
+    digits=1
+  )
+```
+
 
 ::::
 
+
 # All
+
+```{r}
+pctVars <- varsdf %>% 
+  filter(str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
+totaldf %>% 
+  rename(
+    'place'='NAME'
+  ) %>% 
+  DT::datatable(
+    filter="top"
+  ) %>% 
+  DT::formatPercentage(
+    columns=pctVars,
+    digits=1
+  )
+```
+
+
 
 # Variable Guide
 
 ```{r}
-varsdf %>% select(-varName)
+varsdf %>% 
+  DT::datatable(filter="top")
 ```
 
+```{r}
+
+```
 
