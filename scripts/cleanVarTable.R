@@ -52,9 +52,25 @@ ACSVarsdf <- as_tibble(ACSVars)
 
 # Labor vars
 
+BLSVars <-
+  matrix(
+    c(
+      
+      "Unemployment Rate in October 2024", "labor","ARC","Bureau of Labor Statistics","2024OctoberpctUnemploymentRate",
+      "Unemployment Rate in October 2023", "labor","ARC","Bureau of Labor Statistics","2023OctoberpctUnemploymentRate",
+      "Labor Force Participation Rate in October 2024", "labor","ARC","Bureau of Labor Statistics","2024OctoberpctLaborforceParticipationRate",
+      "Labor Force Participation Rate in October 2023", "labor","ARC","Bureau of Labor Statistics","2023OctoberpctLaborforceParticipationRate"
+    ),
+    nrow = 4, ncol = 5, byrow = TRUE
+  )
+
+colnames(BLSVars) <- c("variable", "category", "grant", "source", "varName")
+
+BLSVarsdf <- as_tibble(BLSVars)
+
 
 # rbind them all together
 
-Varsdf <- ACSVarsdf
+Varsdf <- bind_rows(ACSVarsdf,BLSVarsdf)
 
 write_csv(Varsdf, here::here("data", "processed", "varsdf.csv"))
