@@ -88,6 +88,10 @@ library(plotly)
 # This is for census data
 library(tidycensus)
 
+# This is for Bureau of Labor Stats
+# library(devtools)
+# devtools::install_github("mikeasilva/blsAPI")
+library(rjson)
 # This is for saving keys
 # install.packages("pak")
 # pak::pak("keyring")
