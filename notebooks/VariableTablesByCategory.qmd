@@ -1,8 +1,48 @@
 ---
-title: "Variable Tables"
-format: html
+title: | 
+  ![](etddLogo.png){width=1in} ETDD Grant Writing Variable One Stop Shop
+brand:
+  color:
+    palette:
+      pale-green: "#adc9ba"
+      light-green: "#70A086"
+      blue: "#015a71 "
+      dark-blue: "#70A086"
+    background: pale-green
+    foreground: blue
+    primary: blue
+  logo:
+    small: etddLogo.png
+    medium: etddLogo.png
+  typography:
+    fonts:
+      - family: Poppins
+        source: google
+    base: Poppins
+    headings: Poppins
+format: 
+  html:
+    date-modified: 12/06/2024
+    toc: true
+    embed-resources: true
+    css: oddHighlight.css
+    grid: 
+      margin-width: 300px
+      body-width: 2000px
+      sidebar-width: 100px
+    other-links: 
+      - text: Housing Data
+        href: https://www.knoxvillechamber.com/eco/
+      - text: State-level Economic Data
+        href: https://haslam.utk.edu/publication/economic-report-to-the-governor-2024/
 editor: source
+execute: 
+  cache: true
+  echo: false
+  warning: false
+  message: false
 ---
+
 
 ```{r}
 
@@ -46,11 +86,27 @@ totaldf %>%
   ) %>%
   mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    # "$(this.api().table().body().odd()).css({'odd': '#015a71', 'color': '#015a71'});",
+    "}")
+    )
   )
+# %>%
+#   DT::formatPercentage(
+#     columns=pctVars
+#   )
 #names()
 # rename()
 ```
@@ -78,18 +134,57 @@ pctVars <- varsdf %>%
   filter(str_detect(grant,'ARC'), str_detect(varName,'pct')) %>% 
   select(varName)  %>% 
   distinct() %>% 
+  filter(!str_detect(varName,'Rate')) %>% 
+  pull()
+pctWholeVars <- 
+   varsdf %>% 
+  filter(str_detect(grant,'ARC'), str_detect(varName,'Rate')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
   pull()
 totaldf %>% 
-  select(NAME,any_of(arcVars),geography) %>% 
-  rename(
-    'place'='NAME'
+  select(NAME,geography,any_of(arcVars)) %>% 
+  mutate(geography=as.factor(geography)) %>% 
+  dplyr::rename(
+    place=NAME
   ) %>% 
+  mutate(across(any_of(pctVars), ~ 
+                  str_c(
+                    as.character(
+                      round(
+                        (ifelse(
+                          str_detect(
+                            .x,'Rate'),.x,.x*100
+                          )
+                         )
+                        , digits=1)
+                      )
+                    , '%')
+                )) %>% 
+  mutate(across(any_of(pctWholeVars), ~ 
+                  str_c(
+                    as.character(
+                      .x
+                      )
+                    , '%')
+                )) %>% 
+
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars,
-    digits=1
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
   )
 ```
 
@@ -113,12 +208,23 @@ totaldf %>%
   rename(
     'place'='NAME'
   ) %>% 
+  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars,
-    digits=1
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
   )
 ```
 
@@ -136,12 +242,23 @@ totaldf %>%
   rename(
     'place'='NAME'
   ) %>% 
+  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars,
-    digits=1
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
   )
 ```
 
@@ -159,12 +276,23 @@ totaldf %>%
   rename(
     'place'='NAME'
   ) %>% 
+  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars,
-    digits=1
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
   )
 ```
 
@@ -184,12 +312,24 @@ totaldf %>%
   rename(
     'place'='NAME'
   ) %>% 
+  mutate(geography=as.factor(geography)) %>% 
+  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
-    filter="top"
-  ) %>% 
-  DT::formatPercentage(
-    columns=pctVars,
-    digits=1
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
   )
 ```
 
@@ -199,7 +339,25 @@ totaldf %>%
 
 ```{r}
 varsdf %>% 
-  DT::datatable(filter="top")
+  mutate(category=as.factor(category)) %>% 
+    mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
+  DT::datatable(
+    filter="top",
+    extensions = c('Buttons', 
+     'FixedColumns',
+     'FixedHeader'),
+    options = list(
+    dom = 'Bfrtip',
+    buttons = c('copy', 'csv', 'excel', 'print'),
+
+    scrollX = TRUE,
+   fixedHeader=TRUE,
+  initComplete = DT::JS(
+    "function(settings, json) {",
+    "$(this.api().table().header()).css({'background-color': '#015a71', 'color': '#fff'});",
+    "}")
+    )
+  )
 ```
 
 ```{r}
