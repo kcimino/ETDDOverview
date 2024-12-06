@@ -51,6 +51,27 @@ for (name in countyNames) {
 #   ) %>%
 #  plot()
 
+load(here::here('data',"interim", "CountyPlaceNameLists.rda"))
+
+placeName <- ETDDPlaces[1]
+
+
+saveplaceShapefile <- function(placeName) {
+  
+placeShapefile <- sf::read_sf(here::here("data", "raw", "shapefiles", "places", "cb_2023_47_place_500k", "cb_2023_47_place_500k.shp")) %>%
+  # select(STATE_NAME) %>% unique()
+  filter(STATE_NAME == "Tennessee" &
+           str_detect(NAME, placeName))
+fileName <- here::here("data", "processed", "shapefiles", "places", str_c(placeName, "Shapefile.shp"))
+if (file.exists(fileName)) {
+  print(str_c(placeName, " file already exists"))
+} else {
+  sf::st_write(placeShapefile, fileName)
+}
+}
+for (place in ETDDPlaces) {
+  saveplaceShapefile(place)
+}
 
 
 
