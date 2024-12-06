@@ -57,6 +57,19 @@ blsdf <- read_csv(here::here("data","processed","blsData.csv"))
 totaldf <- left_join(acsdf,blsdf, by=c("NAME"="place")) # do rbind or left join later
 
 varsdf <- read_csv(here::here('data','processed','varsdf.csv'))
+
+pctVars <- varsdf %>% 
+  filter(str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  filter(!str_detect(varName,'Rate')) %>% 
+  pull()
+pctWholeVars <- 
+   varsdf %>% 
+  filter(str_detect(varName,'Rate')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  pull()
 ```
 
 
@@ -72,11 +85,7 @@ epaVars <- varsdf %>%
   select(varName)  %>% 
   distinct() %>% 
   pull()
-pctVars <- varsdf %>% 
-  filter(str_detect(grant,'EPA'), str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
+
 totaldf %>% 
   select(NAME,geography,any_of(epaVars)) %>% 
   mutate(geography=as.factor(geography),
@@ -114,14 +123,6 @@ totaldf %>%
 
 ## ARC
 
-```{r}
-varsdf %>% 
-  filter(str_detect(grant,'ARC'), str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  filter(!str_detect(varName,'Rate')) %>% 
-  pull()
-```
 
 
 ```{r}
@@ -130,18 +131,7 @@ arcVars <- varsdf %>%
   select(varName)  %>% 
   distinct() %>% 
   pull()
-pctVars <- varsdf %>% 
-  filter(str_detect(grant,'ARC'), str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  filter(!str_detect(varName,'Rate')) %>% 
-  pull()
-pctWholeVars <- 
-   varsdf %>% 
-  filter(str_detect(grant,'ARC'), str_detect(varName,'Rate')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
+
 totaldf %>% 
   select(NAME,geography,any_of(arcVars)) %>% 
   mutate(geography=as.factor(geography)) %>% 
@@ -198,18 +188,31 @@ totaldf %>%
 
 ```{r}
 
-pctVars <- varsdf %>% 
-  filter(str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
 totaldf %>% 
   filter(geography=='state') %>% 
   rename(
     'place'='NAME'
   ) %>% 
-  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
-  DT::datatable(
+  mutate(across(any_of(pctVars), ~ 
+                  str_c(
+                    as.character(
+                      round(
+                        (ifelse(
+                          str_detect(
+                            .x,'Rate'),.x,.x*100
+                          )
+                         )
+                        , digits=1)
+                      )
+                    , '%')
+                )) %>% 
+  mutate(across(any_of(pctWholeVars), ~ 
+                  str_c(
+                    as.character(
+                      .x
+                      )
+                    , '%')
+                )) %>%   DT::datatable(
     filter="top",
     extensions = c('Buttons', 
      'FixedColumns',
@@ -232,17 +235,32 @@ totaldf %>%
 ## County
 
 ```{r}
-pctVars <- varsdf %>% 
-  filter(str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
+
 totaldf %>% 
   filter(geography=='county') %>% 
   rename(
     'place'='NAME'
   ) %>% 
-  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
+  mutate(across(any_of(pctVars), ~ 
+                  str_c(
+                    as.character(
+                      round(
+                        (ifelse(
+                          str_detect(
+                            .x,'Rate'),.x,.x*100
+                          )
+                         )
+                        , digits=1)
+                      )
+                    , '%')
+                )) %>% 
+  mutate(across(any_of(pctWholeVars), ~ 
+                  str_c(
+                    as.character(
+                      .x
+                      )
+                    , '%')
+                )) %>% 
   DT::datatable(
     filter="top",
     extensions = c('Buttons', 
@@ -266,17 +284,31 @@ totaldf %>%
 ## Place
 
 ```{r}
-pctVars <- varsdf %>% 
-  filter(str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
 totaldf %>% 
   filter(geography=='place') %>% 
   rename(
     'place'='NAME'
   ) %>% 
-  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
+  mutate(across(any_of(pctVars), ~ 
+                  str_c(
+                    as.character(
+                      round(
+                        (ifelse(
+                          str_detect(
+                            .x,'Rate'),.x,.x*100
+                          )
+                         )
+                        , digits=1)
+                      )
+                    , '%')
+                )) %>% 
+  mutate(across(any_of(pctWholeVars), ~ 
+                  str_c(
+                    as.character(
+                      .x
+                      )
+                    , '%')
+                )) %>% 
   DT::datatable(
     filter="top",
     extensions = c('Buttons', 
@@ -303,17 +335,31 @@ totaldf %>%
 # All
 
 ```{r}
-pctVars <- varsdf %>% 
-  filter(str_detect(varName,'pct')) %>% 
-  select(varName)  %>% 
-  distinct() %>% 
-  pull()
 totaldf %>% 
   rename(
     'place'='NAME'
   ) %>% 
   mutate(geography=as.factor(geography)) %>% 
-  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
+  mutate(across(any_of(pctVars), ~ 
+                  str_c(
+                    as.character(
+                      round(
+                        (ifelse(
+                          str_detect(
+                            .x,'Rate'),.x,.x*100
+                          )
+                         )
+                        , digits=1)
+                      )
+                    , '%')
+                )) %>% 
+  mutate(across(any_of(pctWholeVars), ~ 
+                  str_c(
+                    as.character(
+                      .x
+                      )
+                    , '%')
+                )) %>% 
   DT::datatable(
     filter="top",
     extensions = c('Buttons', 
