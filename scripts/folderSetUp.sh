@@ -95,7 +95,7 @@ if [ ! -d "$data" ]; then
     mkdir shapefiles
  #       if $typeOfSetup == 'County'; then
 cd shapefiles
-        mkdir Anderson Blount Campbell Claiborne Cocke Grainger Hamblen Jefferson Knox Loudon Monroe Morgan Roane Scott Sevier Union
+        mkdir Anderson Blount Campbell Claiborne Cocke Grainger Hamblen Jefferson Knox Loudon Monroe Morgan Roane Scott Sevier Union places
    #     if $typeOfSetup == 'CountyPlus'; then
             cd Anderson
             mkdir Clinton Norris OakRidge RockyTop
