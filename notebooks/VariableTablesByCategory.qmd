@@ -12,8 +12,9 @@ if (exists("startrun")) {
   source(here::here("scripts", "startHere.R"))
 }
 acsdf <- read_csv(here::here('data','processed','etddAreaAcsVars.csv'))
+blsdf <- read_csv(here::here("data","processed","blsData.csv"))
 
-totaldf <- acsdf # do rbind or left join later
+totaldf <- left_join(acsdf,blsdf, by=c("NAME"="place")) # do rbind or left join later
 
 varsdf <- read_csv(here::here('data','processed','varsdf.csv'))
 ```
@@ -37,10 +38,13 @@ pctVars <- varsdf %>%
   distinct() %>% 
   pull()
 totaldf %>% 
-  select(NAME,any_of(epaVars),geography) %>% 
-  rename(
-    'place'='NAME'
-  ) %>% 
+  select(NAME,geography,any_of(epaVars)) %>% 
+  mutate(geography=as.factor(geography),
+         NAME=as.factor(NAME)) %>% 
+  dplyr::rename(
+    place=NAME
+  ) %>%
+  mutate(across(any_of(pctVars), ~ str_c(as.character(round((.x*100), digits=1)), '%'))) %>% 
   DT::datatable(
     filter="top"
   ) %>% 
@@ -53,6 +57,16 @@ totaldf %>%
 
 
 ## ARC
+
+```{r}
+varsdf %>% 
+  filter(str_detect(grant,'ARC'), str_detect(varName,'pct')) %>% 
+  select(varName)  %>% 
+  distinct() %>% 
+  filter(!str_detect(varName,'Rate')) %>% 
+  pull()
+```
+
 
 ```{r}
 arcVars <- varsdf %>% 
