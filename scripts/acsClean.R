@@ -4,6 +4,8 @@ if (exists("startrun")) {
   source(here::here("scripts", "startHere.R"))
 }
 
+load(here::here('data',"interim", "CountyPlaceNameLists.rda"))
+
 # Grabbing variables from ACS, || Update
 ACSYear <- 2022
 v2022 <- load_variables(2022, "acs5", cache = TRUE)
