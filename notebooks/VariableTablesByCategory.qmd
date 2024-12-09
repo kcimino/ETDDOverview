@@ -35,6 +35,8 @@ format:
         href: https://www.knoxvillechamber.com/eco/
       - text: State-level Economic Data
         href: https://haslam.utk.edu/publication/economic-report-to-the-governor-2024/
+      - text: Representatives
+        href: https://wapp.capitol.tn.gov/Apps/fml2022/search.aspx
 editor: source
 execute: 
   cache: true
